@@ -26,7 +26,7 @@ def start_node(state: GetPosState):
                       f"选择列：{select_columns}"
                       f"条件：{condition}"
                       f"offset（0也可能表示未设置）：{offset}"
-                      f"limit（0也可能表示未设置）：{limit}\n 输出格式形如/Users/home/user/sandhub/internal/impl.go:50")
+                      f"limit（0也可能表示未设置）：{limit}\n 输出格式形如/Users/home/user/my-app/internal/impl.go:50")
     return {"input": input, "max_step": int(get_runtime_cfg().get("max_step", 20)), "cur_step": 0, "code_path": code_path}
 
 def get_pos_end(state: GetPosState):

@@ -115,7 +115,7 @@ python agent.py
 my-agent 启动中（配置摘要）：
   thread_id          = 10086
   user_id            = 1
-  default_code_path  = /Users/you/go/src/sandstorm
+  default_code_path  = /Users/you/src
   max_step           = 20
   summary_threshold  = 5
   意图：['慢Sql分析', '发送邮件', '结束对话', '日常闲聊']
@@ -130,7 +130,7 @@ my-agent 启动中（配置摘要）：
 ### 示例 1：慢 SQL 分析
 
 ```
-> 分析一下 /Users/you/go/src/sandstorm 下的慢 SQL
+> 分析一下 /Users/you/src下的慢 SQL
 ```
 
 Agent 会：

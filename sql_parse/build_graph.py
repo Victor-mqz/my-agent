@@ -24,15 +24,15 @@ GET_CODE_PATH_PROMPT = """你是一个路径抽取助手。
 
 规则：
 1. 如果用户明确给出了一个目录路径（如 /Users/xxx/project、/data/app/server，或带盘符的 Windows 路径），请原样返回该路径。
-2. 如果用户只给了一个项目名（如 sandhub、my-app），而没有给出完整路径，请返回该项目名（程序会结合当前工作目录去定位）。
+2. 如果用户只给了一个项目名（如 my-agent、my-app），而没有给出完整路径，请返回该项目名（程序会结合当前工作目录去定位）。
 3. 如果用户完全没有提到任何目录或项目，请只返回字符串 "__DEFAULT__"。
 4. 只返回路径或 "__DEFAULT__" 本身，不要加任何解释、引号或多余文字。
 
 例如：
-- 用户输入：分析一下 /Users/qingzhu/go/src/agentrun/sandstorm 下的慢SQL
-  返回：/Users/qingzhu/go/src/agentrun/sandstorm
-- 用户输入：帮我看看 sandhub 项目里的SQL
-  返回：sandhub
+- 用户输入：分析一下 /Users/src/code 下的慢SQL
+  返回：/Users/src/code
+- 用户输入：帮我看看 my-agent 项目里的SQL
+  返回：my-agent
 - 用户输入：分析一下慢SQL怎么优化
   返回：__DEFAULT__
 """

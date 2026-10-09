@@ -685,7 +685,7 @@ def create_file(path: str, content: str, overwrite: bool = False) -> str:
 
 if __name__ == "__main__":
     import json
-    summary = build_project_graph("/Users/qingzhu/go/src/agentrun/sandstorm")
+    summary = build_project_graph("/Users/src")
     print("== project graph summary ==")
     print(json.dumps(summary, ensure_ascii=False, indent=2))
     print("== list root ==")

@@ -19,7 +19,7 @@ class SqlParseResult(BaseModel):
     condition: str = Field(default="", description="The condition to filter the rows")
     offset: int = Field(default=0, description="The offset to start the query")
     limit: int = Field(default=0, description="The limit to the number of rows to return")
-    position: str = Field(default="", description="The position of the code where the query is located, the path is relative path which start with sandhub. e.g. sandhub/pkg/sql_parse.go:10")
+    position: str = Field(default="", description="The position of the code where the query is located, the path is relative path which start with my-app. e.g. my-app/pkg/sql_parse.go:10")
 
 SqlParsePrompt = """
 You are a helpful assistant that can parse sql.
@@ -31,7 +31,7 @@ You are given a SQL query and you need to parse it and return a JSON object with
 - condition (string): the WHERE clause without the "WHERE" keyword. Empty string if none.
 - offset (integer): OFFSET value, 0 if not specified.
 - limit (integer): LIMIT value, 0 if not specified.
-- position (string): the code location in the form "<relative_path>:<line_number>", e.g. "sandhub/pkg/sql_parse.go:10". Empty string if unknown. Do NOT return only a number.
+- position (string): the code location in the form "<relative_path>:<line_number>", e.g. "my-app/pkg/sql_parse.go:10". Empty string if unknown. Do NOT return only a number.
 
 Return ONLY the JSON object, no extra commentary.
 """
