@@ -1,0 +1,32 @@
+# =========================================================
+# my-agent 运行时依赖
+# 测试环境：Python 3.10+
+#
+# 安装：
+#     pip install -r requirements.txt
+#
+# 可选：如果你不想用 patch-ng，可自行把下面的 patch-ng 换成 patch
+#       （两者 API 兼容，`import patch` 都能工作）
+# =========================================================
+
+# LangChain / LangGraph 全家桶
+langchain-core>=0.3.0,<0.4.0
+langchain-openai>=0.2.0,<0.4.0
+langgraph>=0.2.50,<0.6.0
+langgraph-checkpoint>=2.0.0,<3.0.0
+
+# 结构化输出工具（replan / plan / draft 抽取靠它）
+trustcall>=0.0.30
+
+# 结构化模型与配置
+pydantic>=2.6
+typing_extensions>=4.8
+PyYAML>=6.0
+
+# 产出 unified diff 并应用到源码（sql_parse/tools.py 的 write_file 工具用）
+# 若公司内网只有旧版 `patch`，把这一行替换成： patch==1.16
+patch-ng>=1.17.4
+
+# OpenAI 协议客户端（langchain-openai 已经间接依赖它，
+# 但显式列出便于固定版本）
+openai>=1.40.0

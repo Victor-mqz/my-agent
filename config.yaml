@@ -1,0 +1,103 @@
+# ============================================================
+# my-agent 全局配置
+#
+# 本文件集中管理所有「原本写死在代码里」的参数：模型、CLI、
+# 默认路径、慢SQL 列表、意图标签等。
+#
+# 环境变量覆盖规则（优先级：env > yaml > 代码默认值）：
+#   OPENAI_API_KEY        -> openai.api_key_env 指定的 env 名
+#   OPENAI_BASE_URL       -> openai.base_url_env 指定的 env 名
+#   AGENT_CONFIG_PATH     -> 加载指定路径的 yaml 文件（默认当前目录 config.yaml）
+#   AGENT_CODE_PATH       -> runtime.default_code_path
+# ============================================================
+
+openai:
+  # 不要把真实 key 写在这里；程序会从下面指定的环境变量里读
+  api_key_env: OPENAI_API_KEY
+  base_url_env: OPENAI_BASE_URL
+  # 兼容「公司网关 / 阿里云百炼 / 本地 vLLM」等多种 OpenAI 协议服务
+  # 若 env 未设置，则 fallback 到这里：
+  default_base_url: "https://dashscope.aliyuncs.com/compatible-mode/v1"
+
+models:
+  # 制定计划、路径抽取等轻量任务
+  plan:
+    name: qwen-turbo
+    temperature: 0.5
+    enable_thinking: false
+  # React agent 的执行器，关 thinking + 温度 0，稳定调用工具
+  exe:
+    name: qwen-plus
+    temperature: 0
+    enable_thinking: false
+  # 产出最终方案 / 聊天 / 总结 / 意图分析
+  answer:
+    name: qwen-plus
+    temperature: 0.5
+    enable_thinking: false
+  # SQL 结构抽取 / 邮件草稿抽取（严格 JSON 输出）
+  structured:
+    name: qwen3-8b
+    temperature: 0
+    enable_thinking: false
+
+runtime:
+  # 主图 checkpointer 的 thread_id / user_id（单会话常驻）
+  thread_id: "10086"
+  user_id: "1"
+  # 用户没在消息里指定路径时的兜底 code_path；为空表示用 os.getcwd()
+  default_code_path: ""
+  # make_plan / execute_plan 最多迭代多少步，防止死循环
+  max_step: 20
+  # 对话里累计多少条消息后触发总结压缩
+  summary_threshold: 5
+
+intents:
+  # 每个意图配一个 canonical 中文名 + 若干匹配关键字（lower 后用 in 判定）
+  # normalize_intent 会按下面顺序匹配，第一个命中为准；全部不中则落到 chat。
+  - key: sql
+    label: "慢Sql分析"
+    keywords: ["慢sql", "sql分析", "sql 分析"]
+    route: sql_parse       # -> 主图节点名
+  - key: mail
+    label: "发送邮件"
+    keywords: ["发送邮件", "发邮件", "send mail", "send email"]
+    route: send_email
+  - key: exit
+    label: "结束对话"
+    keywords: ["结束对话", "退出", "exit", "quit"]
+    route: __end__
+  - key: chat
+    label: "日常闲聊"
+    keywords: ["日常闲聊", "闲聊", "聊天"]
+    route: chat
+# 当 LLM 返回的意图无法归类时的默认 key
+intent_fallback_key: chat
+
+sql_parse:
+  # 默认待分析的慢 SQL 列表；真实使用时请改成从监控系统/CSV 读取
+  slow_sqls:
+    - "SELECT * FROM your_table WHERE deleted_at IS NULL"
+  # 表索引表：table_name -> 索引列表。查不到时返回空列表。
+  # 这里不细分表名是为了演示；上线建议改成 { "sandbox_instances": [...] } 这种精确映射
+  default_index_list:
+    - "id"
+  # 产出的方案文档文件名（会写到 code_path 下）
+  output_markdown_name: "optimization_plan.md"
+
+send_mail:
+  cli:
+    # agently-cli 的可执行文件名；若安装路径不在 PATH 里，可改成绝对路径
+    binary: "agently-cli"
+    # 建议最低版本：旧版 ctk 有效期过短，容易踩 exit=6
+    min_version: "1.0.18"
+    install_cmd: ["npm", "install", "-g", "@tencent-qqmail/agently-cli"]
+  # 本地 OAuth token 过期缓冲（秒），剩余不足此值则主动重授权
+  token_expiry_buffer_seconds: 300
+  # 各类 CLI 调用的超时时间（秒）
+  timeouts:
+    version: 30
+    status: 60
+    login: 600
+    send: 120
+    install: 300
